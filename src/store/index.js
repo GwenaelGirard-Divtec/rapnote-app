@@ -44,7 +44,7 @@ export default createStore({
     actions: {
         getAllNotes({commit}) {
             commit('setChargingState', true)
-            axios.get('http://localhost:8000/api/notes')
+            axios.get('https://rapnote-back.vercel.app/rapnoteapi/notes')
                     .then(response => {
                         console.log(response.data)
                         commit('setAllNotes', response.data)
@@ -53,7 +53,7 @@ export default createStore({
 
         getOneNote({commit}, id) {
             commit('setChargingState', true)
-            axios.get('http://localhost:8000/api/notes/' + id)
+            axios.get('https://rapnote-back.vercel.app/rapnoteapi/notes/' + id)
                     .then(async response => {
                         console.log(response.data)
                         commit('setCurrentNote', response.data)
@@ -62,7 +62,7 @@ export default createStore({
 
         updateNote({commit}, newNote) {
             commit('setSaveChargingState', true)
-            axios.put('http://localhost:8000/api/notes/' + newNote.id, newNote)
+            axios.put('https://rapnote-back.vercel.app/rapnoteapi/notes/' + newNote.id, newNote)
                     .then(response => {
                         console.log(response.data)
                         commit('setSaveChargingState', false)
@@ -73,7 +73,7 @@ export default createStore({
 
             commit('setChargingState', true)
 
-            axios.post('http://localhost:8000/api/notes')
+            axios.post('https://rapnote-back.vercel.app/rapnoteapi/notes')
                     .then(response => {
                         dispatch('getAllNotes')
                         console.log(response.data)
@@ -84,7 +84,7 @@ export default createStore({
 
         deleteNote({dispatch, commit}, id) {
             commit('setChargingState', true)
-            axios.delete('http://localhost:8000/api/notes/' + id)
+            axios.delete('https://rapnote-back.vercel.app/rapnoteapi/notes/' + id)
                     .then(response => {
                         dispatch('getAllNotes')
                     })
@@ -95,7 +95,7 @@ export default createStore({
 
         async updateInstrumental({dispatch, commit}, options) {
             commit('setChargingState', true)
-            return axios.put(`http://localhost:8000/api/notes/${options.id}/instrumental`, {
+            return axios.put(`https://rapnote-back.vercel.app/rapnoteapi/notes/${options.id}/instrumental`, {
                 "instrumental": options.instrumental,
             })
                     .then(response => {
