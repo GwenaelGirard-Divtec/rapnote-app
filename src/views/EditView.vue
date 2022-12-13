@@ -7,19 +7,21 @@
 
             <div class="wrapper">
                 <div class="title">
-                    <span v-if="!this.editNameState" class="note-title">{{ this.$store.state.currentNote.titre }}</span>
+                    <input v-if="!this.editNameState" readonly class="note-title" :value="this.$store.state.currentNote.titre">
                     <input v-else v-model="this.$store.state.currentNote.titre" ref="nameInput"  class="name-input"
                            type="text" @toggle="this.myFunc">
-                    <Button square v-if="!this.editNameState" @click="this.editNameStateToggle">
-                        <i>edit</i>
-                    </Button>
-                    <Button square primary v-else @click="this.editNameStateToggle">
-                        <i>check</i>
-                    </Button>
+                    <span class="note-saving-state">{{ this.getSaveState }}</span>
                 </div>
-                <span class="note-saving-state">{{ this.getSaveState }}</span>
+                <Button class="title-edit-btn" square v-if="!this.editNameState" @click="this.editNameStateToggle">
+                    <i>edit</i>
+                </Button>
+                <Button class="title-edit-btn" square primary v-else @click="this.editNameStateToggle">
+                    <i>check</i>
+                </Button>
             </div>
         </div>
+
+        <instrumental-player :link="this.$store.state.currentNote.instrumental"></instrumental-player>
 
         <div id="toolbar">
             <div class="ql-formats-wrapper">
@@ -53,6 +55,7 @@
                 <i v-else>save_as</i>
             </button>
         </div>
+
         <QuillEditor theme="snow" v-model:content="this.$store.state.currentContent" toolbar="#toolbar" :options="options"/>
     </section>
 
@@ -63,13 +66,15 @@
 import {QuillEditor} from '@vueup/vue-quill'
 import '@/style/vue-quill.snow.scss';
 import Button from "@/components/Button";
+import InstrumentalPlayer from "@/components/InstrumentalPlayer";
 
 export default {
-    name: "NewEditView",
+    name: "EditView",
 
     components: {
         QuillEditor,
         Button,
+        InstrumentalPlayer
     },
 
     watch: {
@@ -179,40 +184,89 @@ section {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    gap: 16px;
+    padding-bottom: calc(56px + 32px)
 }
 
 .header {
     display: flex;
     gap: 16px;
-    align-items: flex-start;
+    align-items: stretch;
+
+    .back-btn {
+        width: 50px;
+
+        @media screen and (max-width: 600px) {
+            font-size: 40px;
+        }
+    }
 
     .wrapper {
         flex: 1;
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+
+        @media screen and (max-width: 600px) {
+            align-items: center;
+        }
 
         .title {
+            flex: 1;
             display: flex;
-            align-items: center;
-            gap: 16px;
-            justify-content: flex-start;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: space-between;
 
             .note-title {
+                background: none;
+                border-bottom: 2px solid $lightgray;
+                border-top: none;
+                border-left: none;
+                border-right: none;
+                line-height: 10px;
+                outline: none;
                 font-size: 2em;
                 font-weight: bold;
+                width: 100%;
+
+                @media screen and (max-width: 600px) {
+                    font-size: 1em;
+                    border: none;
+                }
             }
 
             .name-input {
                 background: none;
-                border: none;
+                border-bottom: 2px solid $accent;
+                border-top: none;
+                border-left: none;
+                border-right: none;
+                line-height: 10px;
+                outline: none;
                 font-size: 2em;
                 font-weight: bold;
                 width: 100%;
             }
 
+            .note-saving-state {
+                font-family: 'Roboto Mono', monospace;
+                color: $overlayblack;
+
+                @media screen and (max-width: 600px) {
+                    font-size: 0.8em;
+                }
+            }
         }
 
-        .note-saving-state {
-            font-family: 'Roboto Mono', monospace;
-            color: $overlayblack;
+        .title-edit-btn {
+            aspect-ratio: 1;
+            width: 50px;
+
+            @media screen and (max-width: 600px) {
+                width: 40px;
+                height: 40px;
+            }
         }
     }
 }
@@ -222,5 +276,13 @@ section {
     justify-content: space-between;
     align-items: stretch;
     padding-inline: 0;
+
+    button {
+        width: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: $border-radius;
+    }
 }
 </style>
