@@ -7,9 +7,10 @@
 
             <div class="wrapper">
                 <div class="title">
-                    <input v-if="!this.editNameState" readonly class="note-title" :value="this.$store.state.currentNote.titre">
-                    <input v-else v-model="this.$store.state.currentNote.titre" ref="nameInput"  class="name-input"
-                           type="text" @toggle="this.myFunc">
+                    <input v-if="!this.editNameState" readonly class="note-title"
+                        :value="this.$store.state.currentNote.titre">
+                    <input v-else v-model="this.$store.state.currentNote.titre" ref="nameInput" class="name-input"
+                        type="text" @toggle="this.myFunc">
                     <span class="note-saving-state">{{ this.getSaveState }}</span>
                 </div>
                 <Button class="title-edit-btn" square v-if="!this.editNameState" @click="this.editNameStateToggle">
@@ -25,30 +26,20 @@
 
         <div id="toolbar">
             <div class="ql-formats-wrapper">
-              <span class="ql-formats">
-                  <button type="button" class="ql-bold"><i>close</i></button>
-                  <button type="button" class="ql-italic"></button>
-                  <button type="button" class="ql-underline"></button>
-                  <button type="button" class="ql-strike"></button>
-              </span>
+                <span class="ql-formats">
+                    <button type="button" class="ql-bold"><i>close</i></button>
+                    <button type="button" class="ql-italic"></button>
+                    <button type="button" class="ql-underline"></button>
+                </span>
 
                 <span class="ql-formats">
-                  <button type="button" class="ql-blockquote"></button>
-              </span>
+                    <button type="button" class="ql-header" value="1"></button>
+                    <button type="button" class="ql-header" value="2"></button>
+                </span>
 
                 <span class="ql-formats">
-                  <button type="button" class="ql-header" value="1"></button>
-                  <button type="button" class="ql-header" value="2"></button>
-              </span>
-
-                <span class="ql-formats">
-                  <button type="button" class="ql-list" value="ordered"></button>
-                  <button type="button" class="ql-list" value="bullet"></button>
-              </span>
-
-                <span class="ql-formats">
-                  <button type="button" class="ql-clean"></button>
-              </span>
+                    <button type="button" class="ql-clean"></button>
+                </span>
             </div>
             <button class="primary ql-custom" @click="saveCurrentNote">
                 <i v-if="this.$store.state.saveChargingState" class="turning">autorenew</i>
@@ -56,14 +47,15 @@
             </button>
         </div>
 
-        <QuillEditor theme="snow" v-model:content="this.$store.state.currentContent" toolbar="#toolbar" :options="options"/>
+        <QuillEditor theme="snow" v-model:content="this.$store.state.currentContent" toolbar="#toolbar"
+            :options="options" />
     </section>
 
 
 </template>
 
 <script>
-import {QuillEditor} from '@vueup/vue-quill'
+import { QuillEditor } from '@vueup/vue-quill'
 import '@/style/vue-quill.snow.scss';
 import Button from "@/components/Button";
 import InstrumentalPlayer from "@/components/InstrumentalPlayer";
@@ -83,7 +75,7 @@ export default {
         },
 
         getIsCurrentNoteSaved() {
-            if(!this.getIsCurrentNoteSaved) {
+            if (!this.getIsCurrentNoteSaved) {
                 this.savingInterval = setInterval(() => {
                     this.saveCurrentNote()
                 }, 10000)
@@ -138,16 +130,16 @@ export default {
     methods: {
         saveCurrentNote() {
             this.editNameState = false;
-            if(this.$store.getters.isCurrentNoteSaved === false) {
+            if (this.$store.getters.isCurrentNoteSaved === false) {
                 this.$store.commit('setCurrentNote', this.$store.state.currentNote)
-                this.$store.dispatch('updateNote',this.$store.state.currentNote)
+                this.$store.dispatch('updateNote', this.$store.state.currentNote)
             }
         },
 
         editNameStateToggle() {
             this.editNameState = !this.editNameState
 
-            if(this.editNameState) {
+            if (this.editNameState) {
                 setTimeout(() => {
                     this.$refs.nameInput.focus();
                 }, 100)
@@ -164,7 +156,7 @@ export default {
                 this.saveCurrentNote()
             }
 
-            if(e.key === 'Escape') {
+            if (e.key === 'Escape') {
                 this.$router.push('/')
             }
         })
@@ -179,7 +171,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 section {
     display: flex;
     flex-direction: column;

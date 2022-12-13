@@ -1,7 +1,16 @@
-import {createStore} from 'vuex'
+import { createStore } from 'vuex'
 import axios from "axios";
 import router from "@/router";
-import {toRaw} from "vue";
+import { toRaw } from "vue";
+
+const apiUrls = {
+    "dev": "http://localhost:8000/api",
+    "prod": "https://rapnote-back.vercel.app/rapnoteapi"
+}
+
+const api = axios.create({
+    baseURL: apiUrls.prod,
+})
 
 export default createStore({
     state: {
@@ -27,7 +36,7 @@ export default createStore({
 
         setCurrentNote(state, note) {
             state.currentNote = note;
-            state.referenceNote = { ...note};
+            state.referenceNote = { ...note };
             state.currentContent = JSON.parse(note.contenu)
             console.log(toRaw(state.currentNote))
             this.commit('setChargingState', false)
@@ -42,66 +51,66 @@ export default createStore({
         }
     },
     actions: {
-        getAllNotes({commit}) {
+        getAllNotes({ commit }) {
             commit('setChargingState', true)
-            axios.get('https://rapnote-back.vercel.app/rapnoteapi/notes')
-                    .then(response => {
-                        console.log(response.data)
-                        commit('setAllNotes', response.data)
-                    })
+            api.get('/notes')
+                .then(response => {
+                    console.log(response.data)
+                    commit('setAllNotes', response.data)
+                })
         },
 
-        getOneNote({commit}, id) {
+        getOneNote({ commit }, id) {
             commit('setChargingState', true)
-            axios.get('https://rapnote-back.vercel.app/rapnoteapi/notes/' + id)
-                    .then(async response => {
-                        console.log(response.data)
-                        commit('setCurrentNote', response.data)
-                    })
+            api.get('/notes/' + id)
+                .then(async response => {
+                    console.log(response.data)
+                    commit('setCurrentNote', response.data)
+                })
         },
 
-        updateNote({commit}, newNote) {
+        updateNote({ commit }, newNote) {
             commit('setSaveChargingState', true)
-            axios.put('https://rapnote-back.vercel.app/rapnoteapi/notes/' + newNote.id, newNote)
-                    .then(response => {
-                        console.log(response.data)
-                        commit('setSaveChargingState', false)
-                    })
+            api.put('/notes/' + newNote.id, newNote)
+                .then(response => {
+                    console.log(response.data)
+                    commit('setSaveChargingState', false)
+                })
         },
 
-        createBlankNote({dispatch, commit}) {
+        createBlankNote({ dispatch, commit }) {
 
             commit('setChargingState', true)
 
-            axios.post('https://rapnote-back.vercel.app/rapnoteapi/notes')
-                    .then(response => {
-                        dispatch('getAllNotes')
-                        console.log(response.data)
-                        router.push('/edit/' + response.data.id)
-                        commit('setChargingState', false)
-                    })
+            api.post('/notes')
+                .then(response => {
+                    dispatch('getAllNotes')
+                    console.log(response.data)
+                    router.push('/edit/' + response.data.id)
+                    commit('setChargingState', false)
+                })
         },
 
-        deleteNote({dispatch, commit}, id) {
+        deleteNote({ dispatch, commit }, id) {
             commit('setChargingState', true)
-            axios.delete('https://rapnote-back.vercel.app/rapnoteapi/notes/' + id)
-                    .then(response => {
-                        dispatch('getAllNotes')
-                    })
-                    .catch(err => {
-                        console.error(err)
-                    })
+            api.delete('/notes/' + id)
+                .then(response => {
+                    dispatch('getAllNotes')
+                })
+                .catch(err => {
+                    console.error(err)
+                })
         },
 
-        async updateInstrumental({dispatch, commit}, options) {
+        async updateInstrumental({ dispatch, commit }, options) {
             commit('setChargingState', true)
-            return axios.put(`https://rapnote-back.vercel.app/rapnoteapi/notes/${options.id}/instrumental`, {
+            return api.put(`/notes/${options.id}/instrumental`, {
                 "instrumental": options.instrumental,
             })
-                    .then(response => {
-                        console.log(response.data)
-                        commit('setChargingState', false)
-                    })
+                .then(response => {
+                    console.log(response.data)
+                    commit('setChargingState', false)
+                })
         }
 
     },
